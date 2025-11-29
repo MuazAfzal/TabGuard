@@ -1,0 +1,390 @@
+/* ============ Reset ============ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ============ Global ============ */
+
+.tg-body {
+  width: 460px;
+  min-height: 480px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: radial-gradient(circle at top, #1f2933 0%, #020617 55%, #020309 100%);
+  color: #f9fafb;
+  padding: 8px;
+}
+
+/* ============ Generic panel container ============ */
+
+.tg-panel,
+.tg-summary {
+  background: rgba(15, 23, 42, 0.96);
+  border-radius: 12px;
+  padding: 10px 12px 12px;
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.65);
+  margin-top: 8px;
+}
+
+/* ============ Header ============ */
+
+.tg-header {
+  background: linear-gradient(135deg, #020617, #020617, #020617);
+  border-radius: 14px;
+  padding: 14px 14px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.tg-title {
+  font-size: 19px;
+  letter-spacing: 0.03em;
+}
+
+.tg-subtitle {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* ============ Panel headers ============ */
+
+.tg-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.tg-panel-header h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #e5e7eb;
+}
+
+/* ============ Main Scan Button ============ */
+
+.tg-scan-btn {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #22c55e, #22c55e, #0ea5e9);
+  color: #020617;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 12px 22px rgba(34, 197, 94, 0.45);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+}
+
+.tg-scan-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(34, 197, 94, 0.6);
+}
+
+.tg-scan-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.5);
+}
+
+.tg-scan-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Scan status text under button */
+
+.tg-scan-status {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #38bdf8;
+  min-height: 14px;
+}
+
+/* ============ Chip Buttons (AI controls) ============ */
+
+.tg-chip-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: rgba(15, 23, 42, 0.95);
+  color: #e5e7eb;
+  font-size: 11px;
+  padding: 5px 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition:
+    background 0.12s ease,
+    transform 0.12s ease,
+    border-color 0.12s ease,
+    opacity 0.12s ease;
+}
+
+.tg-chip-btn:hover {
+  background: rgba(31, 41, 55, 0.98);
+  transform: translateY(-1px);
+}
+
+.tg-chip-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ============ AI section ============ */
+
+.tg-ai-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.tg-ai-status {
+  flex: 1.6;
+}
+
+.tg-ai-controls {
+  flex: 1.1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-end;
+}
+
+.tg-ai-indicator {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+}
+
+.tg-ai-loading {
+  border-color: rgba(234, 179, 8, 0.8);
+  background: rgba(251, 191, 36, 0.08);
+  color: #fde68a;
+}
+
+.tg-ai-ready {
+  border-color: rgba(34, 197, 94, 0.85);
+  background: rgba(22, 163, 74, 0.08);
+  color: #bbf7d0;
+}
+
+.tg-ai-note {
+  font-size: 10px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+/* ============ Summary ============ */
+
+.tg-summary {
+  margin-top: 8px;
+}
+
+.tg-summary h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.tg-summary-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.tg-stat {
+  padding: 8px 6px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 11px;
+}
+
+.tg-stat.safe {
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.16), rgba(22, 163, 74, 0.06));
+  border: 1px solid rgba(22, 163, 74, 0.7);
+}
+
+.tg-stat.warning {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.16), rgba(234, 179, 8, 0.06));
+  border: 1px solid rgba(234, 179, 8, 0.7);
+}
+
+.tg-stat.danger {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.16), rgba(220, 38, 38, 0.06));
+  border: 1px solid rgba(220, 38, 38, 0.8);
+}
+
+.tg-stat-label {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: #e5e7eb;
+}
+
+.tg-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ============ Results ============ */
+
+.tg-results {
+  margin-top: 6px;
+  max-height: 230px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Scrollbar styling (Chrome) */
+.tg-results::-webkit-scrollbar {
+  width: 6px;
+}
+.tg-results::-webkit-scrollbar-track {
+  background: transparent;
+}
+.tg-results::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 999px;
+}
+
+.tg-tab-card {
+  background: rgba(15, 23, 42, 0.95);
+  border-radius: 10px;
+  border: 1px solid rgba(55, 65, 81, 0.9);
+  padding: 8px 9px;
+  margin-bottom: 6px;
+}
+
+.tg-tab-card.safe {
+  border-left: 3px solid #22c55e;
+}
+
+.tg-tab-card.warning {
+  border-left: 3px solid #eab308;
+}
+
+.tg-tab-card.danger {
+  border-left: 3px solid #ef4444;
+}
+
+.tg-tab-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.tg-risk-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 600;
+}
+
+.tg-risk-badge.safe {
+  background: rgba(34, 197, 94, 0.16);
+  color: #bbf7d0;
+}
+
+.tg-risk-badge.warning {
+  background: rgba(234, 179, 8, 0.16);
+  color: #facc15;
+}
+
+.tg-risk-badge.danger {
+  background: rgba(220, 38, 38, 0.16);
+  color: #fecaca;
+}
+
+.tg-tab-title {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tg-tab-url {
+  font-size: 10px;
+  color: #9ca3af;
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+
+.tg-issues {
+  margin-top: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tg-issue {
+  font-size: 10px;
+  display: flex;
+  gap: 5px;
+  color: #e5e7eb;
+}
+
+.tg-issue-icon {
+  flex-shrink: 0;
+}
+
+/* ============ Scan History ============ */
+
+.tg-scan-history {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  padding: 4px 2px;
+  color: #cbd5e1;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.tg-scan-entry {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+}
+
+/* ============ Footer ============ */
+
+.tg-footer {
+  margin-top: 6px;
+  text-align: center;
+  font-size: 10px;
+  color: #6b7280;
+}
+
+/* ============ Helpers ============ */
+
+.tg-hidden {
+  display: none;
+}
