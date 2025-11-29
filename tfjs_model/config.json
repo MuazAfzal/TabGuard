@@ -1,0 +1,70 @@
+{
+  "model_info": {
+    "version": "1.0",
+    "created": "20251124_232735",
+    "accuracy": 0.9867549668874173,
+    "precision": 0.9833333333333333,
+    "recall": 0.9833333333333333,
+    "f1_score": 0.9833333333333333
+  },
+  "features": {
+    "names": [
+      "url_length",
+      "domain_length",
+      "path_length",
+      "query_length",
+      "num_dots",
+      "num_hyphens",
+      "num_underscores",
+      "num_slashes",
+      "num_questionmarks",
+      "num_equals",
+      "num_at",
+      "num_ampersands",
+      "num_percent",
+      "num_digits",
+      "num_letters",
+      "digit_letter_ratio",
+      "special_char_ratio",
+      "has_https",
+      "has_http",
+      "has_ip",
+      "has_port",
+      "port_number",
+      "unusual_port",
+      "subdomain_count",
+      "has_www",
+      "suspicious_tld",
+      "common_tld",
+      "phishing_keywords",
+      "brand_keywords",
+      "url_entropy",
+      "domain_entropy",
+      "double_slash",
+      "hex_chars",
+      "multiple_at",
+      "path_depth",
+      "suspicious_extension",
+      "num_query_params",
+      "repeating_chars",
+      "domain_has_digits"
+    ],
+    "count": 39
+  },
+  "thresholds": {
+    "safe": 0.3,
+    "warning": 0.6,
+    "danger": 0.6
+  },
+  "usage": {
+    "input_shape": [
+      1,
+      39
+    ],
+    "output_shape": [
+      1,
+      1
+    ],
+    "prediction_format": "probability (0-1)"
+  }
+}
