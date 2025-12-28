@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TabGuard Blocked</title>
+  <link rel="stylesheet" href="blocked.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="row">
+        <img src="icon.png" class="logo" alt="TabGuard" />
+        <div>
+          <h1>TabGuard blocked this page</h1>
+          <p class="sub">We detected a high-risk URL pattern.</p>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="label">Blocked URL</div>
+        <div id="blockedUrl" class="mono">Loading…</div>
+      </div>
+
+      <div class="box">
+        <div class="label">Reasons</div>
+        <ul id="reasons"></ul>
+      </div>
+
+      <div class="actions">
+        <button id="goBack" class="btn">← Go back</button>
+        <button id="proceed" class="btn danger">Proceed anyway</button>
+      </div>
+
+      <p class="tiny">
+        Tip: You can control Auto-Block from the TabGuard popup.
+      </p>
+    </div>
+  </div>
+
+  <script src="blocked.js"></script>
+</body>
+</html>

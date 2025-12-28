@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>TabGuard – Local AI Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 16px; max-width: 950px; margin: 0 auto; }
+    .row { display: flex; gap: 10px; }
+    input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
+    button { padding: 10px 14px; border-radius: 8px; border: 1px solid #222; cursor: pointer; background: #111; color: #fff; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    pre { background: #f6f6f6; padding: 12px; border-radius: 10px; overflow: auto; }
+    .ok { color: #0a7a28; font-weight: 600; }
+    .bad { color: #b00020; font-weight: 600; }
+    .hint { color: #444; font-size: 13px; }
+  </style>
+</head>
+
+<body>
+  <h2>TabGuard Local AI Demo</h2>
+  <p class="hint">
+    This page loads your TensorFlow.js model from <code>tfjs_model/</code> and runs predictions.
+    It’s for demonstration only (outside the extension popup).
+  </p>
+
+  <div id="status">Status: Loading model…</div>
+
+  <div class="row" style="margin: 12px 0;">
+    <input id="urlInput" value="https://example.com/login" />
+    <button id="predictBtn" disabled>Predict</button>
+  </div>
+
+  <h3>Output</h3>
+  <pre id="out">-</pre>
+
+  <!-- IMPORTANT: use your local tf.min.js -->
+  <script src="./tfjs/tf.min.js"></script>
+
+  <!-- Your existing AI integration (unchanged) -->
+  <script src="./ai_integration.js"></script>
+
+  <!-- Demo driver -->
+  <script src="./local_ai_demo.js"></script>
+</body>
+</html>
