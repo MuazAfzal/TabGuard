@@ -1,0 +1,41 @@
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large binary files
+*.dylib
+*.so
+*.dll
+*.exe
+*.bin
+
+# TensorFlow and large ML files
+*.h5
+*.model
+*.weights
+*.pb
+
+# Logs and databases
+*.log
+*.sqlite3
