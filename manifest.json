@@ -1,33 +1,54 @@
 {
+  "name": "TabGuard",
+  "description": "AI-Powered Browser Security Scanner",
+  "version": "1.0.0",
   "manifest_version": 3,
-  "name": "TabGuard - AI Security Scanner",
-  "version": "2.1.0",
-  "description": "AI-powered browser security scanner with real-time phishing and URL threat detection.",
+
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+
+  "action": {
+    "default_title": "TabGuard",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "32": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+
   "permissions": [
     "tabs",
     "storage",
-    "activeTab"
+    "activeTab",
+    "offscreen",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "declarativeNetRequestFeedback"
   ],
+
   "host_permissions": [
+    "<all_urls>",
     "https://api-inference.huggingface.co/*"
   ],
 
-  "icons": {
-  "16": "icon.png"
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
   },
 
-
-  "action": {
-    "default_icon":"icon.png",
-    "default_popup": "popup.html",
-    "default_title": "TabGuard AI Scanner"
-  },
-  "content_security_policy": {
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
-  },
   "web_accessible_resources": [
     {
-      "resources": ["tfjs_model/*"],
+      "resources": [
+        "tfjs_model/*",
+        "lib/tfjs/*",
+        "tfjs/*"
+      ],
       "matches": ["<all_urls>"]
     }
   ]

@@ -3,40 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TabGuard blocked this page because it was flagged as high risk." />
   <title>TabGuard Blocked</title>
   <link rel="stylesheet" href="blocked.css" />
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="row">
-        <img src="icon.png" class="logo" alt="TabGuard" />
-        <div>
-          <h1>TabGuard blocked this page</h1>
-          <p class="sub">We detected a high-risk URL pattern.</p>
+  <noscript>
+    <div style="max-width: 920px; margin: 16px auto; padding: 12px 14px; border: 1px solid rgba(0,0,0,0.12); border-radius: 12px; background: #fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;">
+      <strong>JavaScript is disabled.</strong> TabGuard can’t show the blocking details or allow bypass without JavaScript.
+    </div>
+  </noscript>
+  <main class="wrap" role="main">
+    <section class="card" aria-labelledby="tgBlockedTitle">
+      <header class="row" aria-label="TabGuard blocked page header">
+        <img src="icon.png" class="logo" alt="TabGuard logo" />
+        <div class="head">
+          <div class="kicker">
+            <span class="badge danger" aria-label="Risk level: high">High Risk</span>
+            <span class="badge subtle" aria-label="Action taken">Auto-Block Active</span>
+          </div>
+          <h1 id="tgBlockedTitle">TabGuard blocked this page</h1>
+          <p class="sub">
+            This page was flagged as risky based on TabGuard’s checks. Review the URL and reasons below.
+          </p>
+        </div>
+      </header>
+
+      <div class="grid">
+        <div class="box" aria-label="Blocked URL">
+          <div class="label">Blocked URL</div>
+          <div id="blockedUrl" class="mono" aria-live="polite">Loading…</div>
+        </div>
+
+        <div class="box" aria-label="Reasons for blocking">
+          <div class="label">Reasons</div>
+          <ul id="reasons" class="reasons" aria-live="polite"></ul>
+          <p class="hint">
+            If you believe this is a false positive, you can go back. If you still need to proceed, use “Proceed anyway”.
+          </p>
         </div>
       </div>
 
-      <div class="box">
-        <div class="label">Blocked URL</div>
-        <div id="blockedUrl" class="mono">Loading…</div>
+      <div class="actions" aria-label="Blocked page actions">
+        <button id="goBack" class="btn" type="button">← Go back</button>
+        <button id="proceed" class="btn danger" type="button" aria-describedby="proceedNote" aria-label="Proceed to the blocked page">Proceed anyway</button>
       </div>
 
-      <div class="box">
-        <div class="label">Reasons</div>
-        <ul id="reasons"></ul>
-      </div>
-
-      <div class="actions">
-        <button id="goBack" class="btn">← Go back</button>
-        <button id="proceed" class="btn danger">Proceed anyway</button>
-      </div>
-
-      <p class="tiny">
-        Tip: You can control Auto-Block from the TabGuard popup.
+      <p id="proceedNote" class="tiny">
+        Proceeding may expose you to phishing or malicious content. You can switch Auto-Block on/off from the TabGuard popup.
       </p>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <script src="blocked.js"></script>
 </body>

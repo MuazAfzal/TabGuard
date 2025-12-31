@@ -3,13 +3,69 @@
 // This background script also listens for popup toggles (auto-block/rules/block level).
 
 const DEFAULT_SETTINGS = {
-  autoBlockEnabled: true,
+  autoBlockEnabled: false,
   blockLevel: "danger", // "warning" or "danger"
   rulesEnabled: true
 };
 
 // Avoid redirect loops
 const BLOCK_PAGE = chrome.runtime.getURL("blocked.html");
+
+// Allow users to bypass a specific URL temporarily after a block.
+// Stored as: { [url]: expiresAtEpochMs }
+const BYPASS_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+async function getBypassMap() {
+  const { bypassMap } = await chrome.storage.local.get(["bypassMap"]);
+  return bypassMap && typeof bypassMap === "object" ? bypassMap : {};
+}
+
+async function setBypass(url) {
+  const bypassMap = await getBypassMap();
+  bypassMap[url] = Date.now() + BYPASS_TTL_MS;
+  await chrome.storage.local.set({ bypassMap });
+}
+
+async function isBypassed(url) {
+  const bypassMap = await getBypassMap();
+  const exp = bypassMap[url];
+  if (!exp) return false;
+  if (Date.now() > exp) {
+    delete bypassMap[url];
+    await chrome.storage.local.set({ bypassMap });
+    return false;
+  }
+  return true;
+}
+
+// Ensure settings exist on first install/update
+chrome.runtime.onInstalled.addListener(async () => {
+  try {
+    const existing = await chrome.storage.local.get([
+      "autoBlockEnabled",
+      "blockLevel",
+      "rulesEnabled"
+    ]);
+
+    const toSet = {};
+    if (typeof existing.autoBlockEnabled !== "boolean") {
+      toSet.autoBlockEnabled = DEFAULT_SETTINGS.autoBlockEnabled;
+    }
+    if (existing.blockLevel !== "warning" && existing.blockLevel !== "danger") {
+      toSet.blockLevel = DEFAULT_SETTINGS.blockLevel;
+    }
+    if (typeof existing.rulesEnabled !== "boolean") {
+      toSet.rulesEnabled = DEFAULT_SETTINGS.rulesEnabled;
+    }
+
+    if (Object.keys(toSet).length) {
+      await chrome.storage.local.set(toSet);
+    }
+  } catch (e) {
+    // If storage fails, keep running with DEFAULT_SETTINGS
+    console.warn("[TabGuard] onInstalled settings init failed:", e);
+  }
+});
 
 // -------------------------
 // Rule-based URL checks
@@ -167,15 +223,72 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         return;
       }
 
+      // Back-compat: some popup versions send these message types
+      if (msg.type === "GET_AUTOBLOCK") {
+        const settings = await getSettings();
+        sendResponse({ ok: true, autoBlockEnabled: settings.autoBlockEnabled, settings });
+        return;
+      }
+
+      if (msg.type === "SET_AUTOBLOCK") {
+        const settings = await setSettings({
+          autoBlockEnabled: typeof msg.enabled === "boolean" ? msg.enabled : !!msg.autoBlockEnabled
+        });
+        sendResponse({ ok: true, autoBlockEnabled: settings.autoBlockEnabled, settings });
+        return;
+      }
+
       if (msg.type === "SET_RULES_ENABLED") {
         const settings = await setSettings({ rulesEnabled: !!msg.enabled });
         sendResponse({ ok: true, settings });
         return;
       }
 
+      // Back-compat: alternate naming
+      if (msg.type === "GET_RULES") {
+        const settings = await getSettings();
+        sendResponse({ ok: true, rulesEnabled: settings.rulesEnabled, settings });
+        return;
+      }
+
+      if (msg.type === "SET_RULES") {
+        const settings = await setSettings({
+          rulesEnabled: typeof msg.enabled === "boolean" ? msg.enabled : !!msg.rulesEnabled
+        });
+        sendResponse({ ok: true, rulesEnabled: settings.rulesEnabled, settings });
+        return;
+      }
+
       if (msg.type === "SET_BLOCK_LEVEL") {
         const settings = await setSettings({ blockLevel: msg.blockLevel });
         sendResponse({ ok: true, settings });
+        return;
+      }
+
+      // Toggle auto-block (some popup versions send a single toggle message)
+      if (msg.type === "TOGGLE_AUTOBLOCK") {
+        const current = await getSettings();
+        const settings = await setSettings({ autoBlockEnabled: !current.autoBlockEnabled });
+        sendResponse({ ok: true, settings });
+        return;
+      }
+
+      // Block page: allow the user to proceed to the original URL (temporary bypass)
+      if (msg.type === "BYPASS_ONCE") {
+        const originalUrl = msg.originalUrl;
+        if (typeof originalUrl !== "string" || !/^https?:/i.test(originalUrl)) {
+          sendResponse({ ok: false, error: "Invalid originalUrl" });
+          return;
+        }
+        await setBypass(originalUrl);
+        sendResponse({ ok: true });
+        return;
+      }
+
+      // Block page: fetch last blocked details to display
+      if (msg.type === "GET_LAST_BLOCKED") {
+        const { lastBlocked } = await chrome.storage.local.get(["lastBlocked"]);
+        sendResponse({ ok: true, lastBlocked: lastBlocked || null });
         return;
       }
 
@@ -194,25 +307,38 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   // Only react on URL changes or when loading begins
   if (!changeInfo.url && changeInfo.status !== "loading") return;
-  if (!tab?.url) return;
+  if (!tab || !tab.url) return;
+
+  // Ignore non-http(s) schemes (prevents noise + avoids accidental blocking)
+  if (!/^https?:/i.test(tab.url)) return;
 
   const url = tab.url;
+
+  // If user has bypassed this URL recently, do not block it.
+  if (await isBypassed(url)) return;
 
   // Never block internal pages or our own blocked page
   if (
     url.startsWith("chrome://") ||
     url.startsWith("chrome-extension://") ||
     url.startsWith("edge://") ||
-    url.startsWith("about:") ||
-    url.startsWith(BLOCK_PAGE)
+    url.startsWith("about:")
   ) {
     return;
   }
 
-  // Prevent repeated loops on same URL
+  // (blocked page is an extension URL; it won't reach this point due to the https? scheme check above)
+
+  // Prevent repeated loops on the same URL during a single navigation
   const last = tabLastUrl.get(tabId);
-  if (last === url) return;
+  if (last === url && changeInfo.status !== "loading") return;
   tabLastUrl.set(tabId, url);
+
+  // When navigation completes, allow future re-scans on the same URL
+  if (changeInfo.status === "complete") {
+    // Keep a short-lived cache entry only
+    setTimeout(() => tabLastUrl.delete(tabId), 2000);
+  }
 
   const settings = await getSettings();
   if (!settings.autoBlockEnabled) return;

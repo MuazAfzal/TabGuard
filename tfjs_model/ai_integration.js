@@ -62,6 +62,7 @@ function tgGetUrl(path) {
   return path; // fallback for non-extension environments
 }
 
+/*************  ✨ Windsurf Command 🌟  *************/
 // Load the AI model (local TensorFlow.js model)
 async function loadAIModel() {
   try {
@@ -138,6 +139,7 @@ async function loadAIModel() {
     return false;
   }
 }
+/*******  f5fb521c-8b62-46bb-93e2-d2d05b2956fd  *******/
 
 function extractFeaturesJS(url) {
   const features = {};

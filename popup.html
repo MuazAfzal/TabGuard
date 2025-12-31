@@ -8,89 +8,174 @@
 </head>
 
 <body class="tg-body">
+  <div class="tg-container">
 
-  <!-- Header -->
-  <header class="tg-header">
-    <h1 class="tg-title">🛡️ TabGuard</h1>
-    <p class="tg-subtitle">AI-Powered Browser Security Scanner</p>
-  </header>
+    <!-- Header -->
+    <header class="tg-header">
+      <div class="tg-header-row">
+        <div class="tg-header-text">
+          <h1 class="tg-title">
+            <img src="icon.png" alt="TabGuard icon" class="tg-app-icon" />
+            <span>TabGuard</span>
+          </h1>
+          <p class="tg-subtitle">AI-Powered Browser Security Scanner</p>
+        </div>
 
-  <!-- Scan Section -->
-  <section class="tg-panel">
-    <button id="scanBtn" class="tg-scan-btn">🔍 Scan All Open Tabs</button>
-    <div id="scanStatus" class="tg-scan-status"></div>
-  </section>
+        <!-- Theme toggle (Light/Dark) -->
+        <button id="themeToggleBtn" class="tg-icon-btn" type="button" aria-label="Toggle theme" title="Toggle theme">
+          <span class="tg-theme-icon tg-sun" aria-hidden="true">☀️</span>
+          <span class="tg-theme-icon tg-moon" aria-hidden="true">🌙</span>
+        </button>
+      </div>
+    </header>
 
-  <!-- AI Engine Section -->
-  <section class="tg-panel">
-  <div class="tg-panel-header">
-    <h2>AI Engine</h2>
+    <!-- Scan Section -->
+    <section class="tg-panel">
+      <button id="scanBtn" class="tg-primary-btn">🔍 Scan All Open Tabs</button>
+      <div id="scanStatus" class="tg-scan-status"></div>
+    </section>
+
+    <!-- AI Engine Section -->
+    <section class="tg-panel">
+      <div class="tg-panel-header-row">
+        <h2>AI Engine</h2>
+        <div class="tg-ai-info">
+          <button id="localAiInfoBtn" class="tg-icon-btn" type="button" aria-label="Local AI info" title="Local AI info">ℹ️</button>
+          <button id="cloudAiInfoBtn" class="tg-icon-btn" type="button" aria-label="Cloud AI info" title="Cloud AI info">ℹ️</button>
+        </div>
+      </div>
+
+      <div class="tg-ai-row">
+        <div class="tg-ai-status">
+          <span id="aiIndicator" class="tg-ai-indicator tg-ai-loading">
+            Mode: Initialising…
+          </span>
+          <p id="aiNote" class="tg-ai-note">
+            Combine rule-based checks with local neural network and optional cloud AI.
+          </p>
+        </div>
+
+        <div class="tg-ai-controls">
+          <!-- Local AI toggle -->
+          <label class="tg-switch" for="localAiToggleBtn">
+            <input id="localAiToggleBtn" class="tg-switch-input" type="checkbox" checked />
+            <span class="tg-switch-ui" aria-hidden="true">
+              <span class="tg-switch-track"></span>
+              <span class="tg-switch-thumb"></span>
+            </span>
+            <span class="tg-switch-label">🧠 Local AI</span>
+          </label>
+
+          <!-- Cloud AI toggle -->
+          <label class="tg-switch" for="cloudAiToggleBtn">
+            <input id="cloudAiToggleBtn" class="tg-switch-input" type="checkbox" checked />
+            <span class="tg-switch-ui" aria-hidden="true">
+              <span class="tg-switch-track"></span>
+              <span class="tg-switch-thumb"></span>
+            </span>
+            <span class="tg-switch-label">☁️ Cloud AI</span>
+          </label>
+
+          <!-- Rules toggle -->
+          <label class="tg-switch" for="rulesToggleBtn">
+            <input id="rulesToggleBtn" class="tg-switch-input" type="checkbox" checked />
+            <span class="tg-switch-ui" aria-hidden="true">
+              <span class="tg-switch-track"></span>
+              <span class="tg-switch-thumb"></span>
+            </span>
+            <span class="tg-switch-label">🧩 Rules</span>
+          </label>
+
+          <!-- Auto-Block toggle -->
+          <label class="tg-switch" for="blockToggleBtn">
+            <input id="blockToggleBtn" class="tg-switch-input" type="checkbox" />
+            <span class="tg-switch-ui" aria-hidden="true">
+              <span class="tg-switch-track"></span>
+              <span class="tg-switch-thumb"></span>
+            </span>
+            <span class="tg-switch-label">⛔ Auto-Block</span>
+          </label>
+
+          <!-- Reload local model -->
+          <button id="aiReloadBtn" class="tg-chip-btn">♻️ Reload Local AI</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Summary Section -->
+    <section id="summary" class="tg-panel tg-summary-panel tg-hidden">
+      <div class="tg-panel-header">
+        <h2>Scan Summary</h2>
+        <div class="tg-summary-meta">
+          <span id="summaryTotalText" class="tg-summary-total">
+            <span id="totalTabsCount" class="tg-summary-total-num">0</span> tabs
+          </span>
+        </div>
+      </div>
+
+      <div class="tg-summary-visual">
+        <!-- Donut chart -->
+        <div class="tg-donut" aria-label="Scan summary chart">
+          <div class="tg-donut-center">
+            <span id="donutTotalAlias" class="tg-summary-total-num">0</span>
+            <div class="tg-donut-label">Tabs</div>
+          </div>
+        </div>
+
+        <!-- Progress bars -->
+        <div class="tg-bars">
+          <div class="tg-bar-row">
+            <div class="tg-bar-label">
+              <span><span class="dot safe"></span> Safe</span>
+              <span class="count" id="safeCount">0</span>
+            </div>
+            <div class="tg-bar">
+              <div class="tg-bar-fill safe" id="barSafe"></div>
+            </div>
+          </div>
+
+          <div class="tg-bar-row">
+            <div class="tg-bar-label">
+              <span><span class="dot warning"></span> Warning</span>
+              <span class="count" id="warningCount">0</span>
+            </div>
+            <div class="tg-bar">
+              <div class="tg-bar-fill warning" id="barWarning"></div>
+            </div>
+          </div>
+
+          <div class="tg-bar-row">
+            <div class="tg-bar-label">
+              <span><span class="dot danger"></span> Threats</span>
+              <span class="count" id="dangerCount">0</span>
+            </div>
+            <div class="tg-bar">
+              <div class="tg-bar-fill danger" id="barDanger"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scan results -->
+    <section>
+      <div id="results" class="tg-results"></div>
+    </section>
+
+    <!-- Last 5 Scans -->
+    <section class="tg-panel">
+      <div class="tg-panel-header">
+        <h2>Last 5 Scans</h2>
+      </div>
+      <div id="recentScansList" class="tg-scan-history"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="tg-footer">
+      <p>Last Scan: <span id="lastScan">Now</span></p>
+    </footer>
+
   </div>
-
-  <div class="tg-ai-row">
-    <div class="tg-ai-status">
-      <span id="aiIndicator" class="tg-ai-indicator tg-ai-loading">
-        Mode: Initialising…
-      </span>
-      <p id="aiNote" class="tg-ai-note">
-        Combine rule-based checks with local neural network and optional cloud AI.
-      </p>
-    </div>
-
-    <div class="tg-ai-controls">
-      <!-- Local AI toggle (button to control your trained model) -->
-      <button id="localAiToggleBtn" class="tg-chip-btn">🧠 Local AI: On</button>
-
-      <!-- Cloud AI toggle (Hugging Face) -->
-      <button id="cloudAiToggleBtn" class="tg-chip-btn">☁️ Cloud AI: On</button>
-
-      <!-- Reload local model -->
-      <button id="aiReloadBtn" class="tg-chip-btn">♻️ Reload Local AI</button>
-    </div>
-  </div>
-</section>
-
-
-  <!-- Summary Section -->
-  <section id="summary" class="tg-summary tg-hidden">
-    <h2>Scan Summary</h2>
-    <div class="tg-summary-stats">
-
-      <div class="tg-stat safe">
-        <span class="tg-stat-label">Safe</span>
-        <span id="safeCount" class="tg-stat-value">0</span>
-      </div>
-
-      <div class="tg-stat warning">
-        <span class="tg-stat-label">Warning</span>
-        <span id="warningCount" class="tg-stat-value">0</span>
-      </div>
-
-      <div class="tg-stat danger">
-        <span class="tg-stat-label">Threats</span>
-        <span id="dangerCount" class="tg-stat-value">0</span>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Scan results -->
-  <section>
-    <div id="results" class="tg-results"></div>
-  </section>
-
-  <!-- Last 5 Scans -->
-  <section class="tg-panel">
-    <div class="tg-panel-header">
-      <h2>Last 5 Scans</h2>
-    </div>
-    <div id="recentScansList" class="tg-scan-history"></div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="tg-footer">
-    <p>Last Scan: <span id="lastScan">Now</span></p>
-  </footer>
 
   <!-- SCRIPTS (IMPORTANT ORDER) -->
   <script src="tfjs/tf.min.js"></script>
