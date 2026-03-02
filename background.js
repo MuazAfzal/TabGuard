@@ -8,6 +8,20 @@ const DEFAULT_SETTINGS = {
   rulesEnabled: true
 };
 
+function normalizeBool(value) {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string") {
+    const v = value.trim().toLowerCase();
+    if (v === "true") return true;
+    if (v === "false") return false;
+  }
+  if (typeof value === "number") {
+    if (value === 1) return true;
+    if (value === 0) return false;
+  }
+  return undefined;
+}
+
 // Avoid redirect loops
 const BLOCK_PAGE = chrome.runtime.getURL("blocked.html");
 
@@ -172,16 +186,18 @@ async function getSettings() {
 async function setSettings(partial) {
   const allowed = {};
 
-  if (typeof partial.autoBlockEnabled === "boolean") {
-    allowed.autoBlockEnabled = partial.autoBlockEnabled;
+  const ab = normalizeBool(partial.autoBlockEnabled);
+  if (typeof ab === "boolean") {
+    allowed.autoBlockEnabled = ab;
   }
 
   if (partial.blockLevel === "warning" || partial.blockLevel === "danger") {
     allowed.blockLevel = partial.blockLevel;
   }
 
-  if (typeof partial.rulesEnabled === "boolean") {
-    allowed.rulesEnabled = partial.rulesEnabled;
+  const rb = normalizeBool(partial.rulesEnabled);
+  if (typeof rb === "boolean") {
+    allowed.rulesEnabled = rb;
   }
 
   if (Object.keys(allowed).length > 0) {
@@ -218,7 +234,10 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 
       // Convenience toggles (optional)
       if (msg.type === "SET_AUTOBLOCK_ENABLED") {
-        const settings = await setSettings({ autoBlockEnabled: !!msg.enabled });
+        const enabled = normalizeBool(msg.enabled);
+        const settings = await setSettings({
+          autoBlockEnabled: typeof enabled === "boolean" ? enabled : DEFAULT_SETTINGS.autoBlockEnabled
+        });
         sendResponse({ ok: true, settings });
         return;
       }
@@ -231,15 +250,20 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       }
 
       if (msg.type === "SET_AUTOBLOCK") {
+        const enabled = normalizeBool(msg.enabled);
+        const fallback = normalizeBool(msg.autoBlockEnabled);
         const settings = await setSettings({
-          autoBlockEnabled: typeof msg.enabled === "boolean" ? msg.enabled : !!msg.autoBlockEnabled
+          autoBlockEnabled: typeof enabled === "boolean" ? enabled : (typeof fallback === "boolean" ? fallback : DEFAULT_SETTINGS.autoBlockEnabled)
         });
         sendResponse({ ok: true, autoBlockEnabled: settings.autoBlockEnabled, settings });
         return;
       }
 
       if (msg.type === "SET_RULES_ENABLED") {
-        const settings = await setSettings({ rulesEnabled: !!msg.enabled });
+        const enabled = normalizeBool(msg.enabled);
+        const settings = await setSettings({
+          rulesEnabled: typeof enabled === "boolean" ? enabled : DEFAULT_SETTINGS.rulesEnabled
+        });
         sendResponse({ ok: true, settings });
         return;
       }
